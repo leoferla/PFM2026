@@ -18,11 +18,11 @@ def simulate_spot_gbm(S0, T, n_steps, n_paths, mu, sigma, seed=0):
 
     Inputs:
         S0      : spot inicial
-        T       : horizonte total (años)
+        T       : tiempo total (años)
         n_steps : número de pasos temporales
         n_paths : número de trayectorias
-        mu      : drift (mundo real; para pricing riesgo-neutral sería diferente)
-        sigma   : volatilidad (constante)
+        mu      : drift
+        sigma   : volatilidad
         seed    : semilla aleatoria
 
     Output:
@@ -105,6 +105,5 @@ def main():
     plt.title("Curva de futuros - Ecuación (7)")
     plt.grid(True)
     plt.show()
-
 
 if __name__ == "__main__": main()
