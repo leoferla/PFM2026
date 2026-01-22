@@ -27,7 +27,7 @@ def simulate_spot_gbm(S0, T, n_steps, n_paths, mu, sigma, seed=0):
 
     Output:
         times   : vector de tiempos (0..T)
-        S       : matriz (n_paths x (n_steps+1)) con trayectorias del spot"""
+        S       : matriz con trayectorias del spot"""
     np.random.seed(seed)
     dt = T / n_steps
     times = np.linspace(0.0, T, n_steps + 1)
@@ -105,5 +105,6 @@ def main():
     plt.title("Curva de futuros - Ecuación (7)")
     plt.grid(True)
     plt.show()
+
 
 if __name__ == "__main__": main()
