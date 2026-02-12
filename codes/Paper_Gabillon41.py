@@ -13,8 +13,37 @@
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+import math
+from scipy.stats import norm
+
 import numpy as np
 import matplotlib.pyplot as plt
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+class bscall:
+
+    """Opción call, solución analítica.
+    """
+
+    def __init__ (self, r, sigma, E, T):
+
+        self.r = r
+        self.sigma = sigma
+        self.E = E
+        self.T = T
+        self.c = r + 0.5 * sigma*sigma
+
+    def __call__ (self, s, t):
+
+        tau = self.T - t
+        d1 = (math.log (s / self.E) + self.c * tau) / (self.sigma * math.sqrt (tau))
+        d2 = d1 - self.sigma * math.sqrt (tau)
+
+        Nd1 = norm.cdf (d1)
+        Nd2 = norm.cdf (d2)
+
+        return s * Nd1 - self.E * math.exp (-self.r * tau) * Nd2
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -145,7 +174,8 @@ def main():
 
     T = 1.0            # 1 año
     n_steps = 252      # dias con el mercado operativo (aprox)
-    n_paths = 5000     # nº trayectorias
+    #-- n_paths = 5000     # nº trayectorias
+    n_paths = 10000    # nº trayectorias
 
     times, S_paths = simulate_spot_gbm(
         S0=S0, T=T, n_steps=n_steps, n_paths=n_paths, mu=mu, sigma=sigma, seed=42)
@@ -274,7 +304,21 @@ def main():
 
     # C) Precio de la call vs S0
     #     Simulamos solo S_T directamente para varios S0.
-    S0_grid = np.linspace(S0 * 0.6, S0 * 1.4, 25)
+    #-- S0_grid = np.linspace(S0 * 0.6, S0 * 1.4, 25)
+
+    #################################################################################
+    print ()
+    print (' Monte Carlo: ')
+    print ('        S0: ', S0)
+    print ('         r: ', r)
+    print ('        mu: ', mu)
+    print ('     sigma: ', sigma)
+    print ('         K: ', K)
+    print ('         T: ', T)
+    print ()
+    #################################################################################
+
+    S0_grid = np.linspace(S0 * 0.3, S0 * 1.8, 25)
     prices = []
     for S0_i in S0_grid:
         # simulamos S_T
@@ -283,12 +327,45 @@ def main():
         payoff = np.maximum(S_T - K, 0.0)
         prices.append(np.exp(-r*T) * np.mean(payoff))
 
+    #-- plt.figure(figsize=(9, 5))
+    #-- plt.plot(S0_grid, prices, marker="o", linewidth=2)
+    #-- plt.xlabel("Spot")
+    #-- plt.ylabel("Precio Call (MC)")
+    #-- plt.title("Precio de la Call (MC) en función de S0")
+    #-- plt.grid(True)
+
+    mu = 0.05          # drift del spot
+    sigma = 0.15       # volatilidad spot
+    r = 0.03           # tipo de interés
+    r = mu             # tipo de interés
+    T = 1.0            # vencimiento
+
+    #################################################################################
+    print ()
+    print (' Solución analítica: ')
+    print ('        S0: ', S0)
+    print ('         r: ', r)
+    print ('     sigma: ', sigma)
+    print ('         K: ', K)
+    print ('         T: ', T)
+    print ()
+    #################################################################################
+
+    analytic_call = bscall (r, sigma, K, T)
+    y = []
+    for S0_i in S0_grid:
+        y.append (analytic_call (S0_i, 0.0))
+
     plt.figure(figsize=(9, 5))
-    plt.plot(S0_grid, prices, marker="o", linewidth=2)
+    plt.plot(S_pay, call_pay, linewidth=2, label=f"max(S-K,0), K={K}")
+    plt.plot(S0_grid, y, lw=2, label=r"Analytic solution")
+    plt.plot(S0_grid, prices, marker="o", linewidth=2, label=f"Monte Carlo ({n_paths} paths)")
     plt.xlabel("Spot")
     plt.ylabel("Precio Call (MC)")
     plt.title("Precio de la Call (MC) en función de S0")
     plt.grid(True)
+    plt.legend ()
+
     plt.show()
     
 

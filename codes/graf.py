@@ -51,7 +51,10 @@ def graf02 (x, y, u, nfig=1, vax=[]):
     fig = plt.figure (nfig)
     ax = fig.add_subplot (111, projection='3d')
     ax.plot_trisurf (x, y, u, cmap=cm.copper, antialiased=True, linewidth=0.0, shade=False)
-    ax.plot ([1., 1.], [1., 1.], [0., 10.], 'k.')
+    #-- ax.plot ([1., 1.], [1., 1.], [0., 10.], 'k.')
+
+    ax.set_xlabel (r'$S$')
+    ax.set_ylabel (r'$\delta$')
 
 # --------------------------------------------------------------------
 
