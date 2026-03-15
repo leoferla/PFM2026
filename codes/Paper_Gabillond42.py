@@ -144,7 +144,43 @@ def main():
     plt.title("Futuro aproximado vs Spot (δ estocástico) - F vs S")
     plt.grid(True)
     plt.show()
-
+    
+    # 7) CURVA DE FUTUROS
+    
+    # La fórmula: F = S * exp((r - delta) * tau)
+    #   - delta > r  →  exponente negativo  →  curva DECRECE  →  backwardation
+    #   - delta = r  →  exponente = 0       →  curva PLANA
+    #   - delta < r  →  exponente positivo  →  curva CRECE    →  contango
+ 
+    taus_curva = np.linspace(0.01, 2.0, 100)   # 100 vencimientos de 0 a 2 años
+ 
+    # Curva base con los parámetros del modelo
+    F_curva = future_approx(S0, delta0, r, taus_curva)
+ 
+    # Tres escenarios para ver el efecto de delta
+    F_backw   = future_approx(S0, 0.10,  r, taus_curva)   # delta=10%: backwardation
+    F_flat    = future_approx(S0, r,     r, taus_curva)   # delta=r:   plana
+    F_contang = future_approx(S0, 0.01, r, taus_curva)   # delta=1%: contango
+ 
+    plt.figure(figsize=(9, 5))
+    plt.plot(taus_curva, F_backw,   linewidth=2, color="firebrick",
+             label=f"delta=10%  →  backwardation  (delta > r={r:.0%})")
+    plt.plot(taus_curva, F_curva,   linewidth=2, color="darkorange",
+             label=f"delta={delta0:.0%}  →  backwardation")
+    plt.plot(taus_curva, F_flat,    linewidth=2, color="gray", linestyle="--",
+             label=f"delta={r:.0%}   →  curva plana       (delta = r)")
+    plt.plot(taus_curva, F_contang, linewidth=2, color="steelblue",
+             label="delta=1%  →  contango          (delta < r)")
+    plt.axhline(S0, color="black", linestyle=":", linewidth=1.2,
+                label=f"Spot S0 = {S0}")
+    plt.xlabel("Vencimiento τ (años)")
+    plt.ylabel("F(0, τ)")
+    plt.title("Gabillon 4.2: curva de futuros\n"
+              "F(S, δ, τ) = S · exp((r − δ) · τ)")
+    plt.legend(fontsize=9)
+    plt.grid(True)
+    plt.show()
+    
     # Resumen numérico
     print("Resumen en t_obs:")
     print(f"t_obs usado: {times[idx]:.4f} años")
