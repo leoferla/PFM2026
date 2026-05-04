@@ -63,11 +63,6 @@ def grad_J(a, S, V, K, r, T):
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Newton para G(a) = 0
-# Mismo esquema que Euler_Implicito.py:
-#   G = ...
-#   JG[:,j] = (G(a+h) - G(a)) / h
-#   Z = solve(JG, G)
-#   a = a - Z
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 def newton(S, V, K, r, T, a0, niter, eps):
