@@ -169,7 +169,8 @@ if __name__ == '__main__':
     # Datos
     # -----------------------------------------------------------------
 
-    filepath = 'TFM_Assets.xlsx'
+    #-- filepath = 'TFM_Assets.xlsx'
+    filepath = '../data/TFM_Assets.xlsx'
     S0, tau, F_mercado, fecha_obs = cargar_datos(filepath)
 
     r = 0.03

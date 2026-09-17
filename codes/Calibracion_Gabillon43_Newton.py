@@ -114,7 +114,8 @@ if __name__ == '__main__':
     print(' Parámetros: L0, beta')
     print()
 
-    filepath = 'TFM_Assets.xlsx'
+    #-- filepath = 'TFM_Assets.xlsx'
+    filepath = '../data/TFM_Assets.xlsx'
     S0, tau, F_mercado, fecha_obs = cargar_datos(filepath)
 
     # Parámetros fijados
